@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Rss Client</string>
+    <string name="title_links">Links</string>
+    <string name="title_topics">Topics</string>
+    <string name="title_article">Article</string>
+    <string name="dialog_delete_link">Вы хотите удалить даную ссылку?</string>
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+    <string name="rss_link">Ссылка</string>
+    <string name="add_rss_link">Добавить ссылку</string>
+    <string name="title">Имя</string>
+</resources>
