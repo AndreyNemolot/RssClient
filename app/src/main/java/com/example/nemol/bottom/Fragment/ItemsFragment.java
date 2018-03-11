@@ -1,4 +1,4 @@
-package com.example.nemol.bottom;
+package com.example.nemol.bottom.Fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -9,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.example.nemol.bottom.Interface.GetArticle;
+import com.example.nemol.bottom.Model.RssItem;
+import com.example.nemol.bottom.R;
 
 import java.util.ArrayList;
 
@@ -19,6 +24,7 @@ import java.util.ArrayList;
 public class ItemsFragment extends Fragment {
 
     private ListView listRssItems;
+    private TextView tvNotFound;
     private ArrayAdapter<RssItem> itemsAdapter;
     private ArrayList<RssItem> rssItems = new ArrayList<RssItem>();
     private GetArticle getArticle;
@@ -39,6 +45,7 @@ public class ItemsFragment extends Fragment {
         View v = inflater.inflate(R.layout.frg_items_list, null);
         listRssItems = (ListView) v.findViewById(R.id.itemsList);
         itemsAdapter = new ArrayAdapter<RssItem>(getActivity(), R.layout.list_item, rssItems);
+        tvNotFound = (TextView)v.findViewById(R.id.tvNotFound);
         listRssItems.setAdapter(itemsAdapter);
 
         Bundle bundle = this.getArguments();
@@ -46,6 +53,11 @@ public class ItemsFragment extends Fragment {
             String link = bundle.getString("link");
             bundle.clear();
             rssItems.addAll(RssItem.getRssItems(link));
+            if(rssItems.size()==0){
+                tvNotFound.setVisibility(View.VISIBLE);
+            }else{
+                tvNotFound.setVisibility(View.GONE);
+            }
             itemsAdapter.notifyDataSetChanged();
 
         }
@@ -59,7 +71,7 @@ public class ItemsFragment extends Fragment {
 
         return v;
     }
-    void cleanList(){
+    public void cleanList(){
         rssItems.clear();
     }
 }

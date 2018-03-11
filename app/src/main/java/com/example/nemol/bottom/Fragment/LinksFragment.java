@@ -1,9 +1,8 @@
-package com.example.nemol.bottom;
+package com.example.nemol.bottom.Fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,12 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.example.nemol.bottom.DBHelper;
+import com.example.nemol.bottom.Interface.GetLink;
+import com.example.nemol.bottom.Model.RssLink;
+import com.example.nemol.bottom.R;
+
 
 /**
  * Created by nemol on 03.09.2017.
@@ -27,13 +29,17 @@ public class LinksFragment extends Fragment {
 
     private final String DB_NAME = "RSStable";
     private ListView listRssLinks;
-    private ArrayAdapter<RssLink> linksAdapter;
-    private RssLink selectLink;
-    private GetLink getLinkListener;
-    private DBHelper dbHelper;
-    private ArrayList<RssLink> rssLinks;
     private SQLiteDatabase db;
-    private int deleteId;
+    private GetLink getLinkListener;
+    private CursorAdapter linksAdapter;
+    private Cursor cursor;
+
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        db.close();
+        super.onDestroy();
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -51,62 +57,57 @@ public class LinksFragment extends Fragment {
         View v = inflater.inflate(R.layout.frg_links_list, null);
         listRssLinks = v.findViewById(R.id.linksList);
 
-        listRssLinks.setAdapter(linksAdapter);
+        DBHelper dbHelper = new DBHelper(getActivity());
+        db = dbHelper.getWritableDatabase();
+        setList(getCursor());
+
+        listRssLinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(i);
+                getLinkListener.getLink(cursor.getString(2));
+            }
+        });
+
         listRssLinks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                RssLink deleteItem = (RssLink) listRssLinks.getItemAtPosition(i);
-                deleteId = deleteItem.getId();
+                final long deleteId = l;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle(R.string.dialog_delete_link)
                         .setCancelable(false)
                         .setPositiveButton(R.string.Yes,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        listRssLinks.getItemAtPosition(id);
-                                        db.delete(DB_NAME, "id = ?", new String[]{String.valueOf(deleteId)});
-                                        dbRead();
+                                        db.delete(DB_NAME, "_id = ?", new String[]{String.valueOf(deleteId)});
+                                        changeCursor();
                                         dialog.cancel();
                                     }
                                 })
                         .setNegativeButton(R.string.No, null);
                 AlertDialog alert = builder.create();
                 alert.show();
-                return false;
-            }
-        });
-        dbHelper = new DBHelper(getActivity());
-        dbRead();
-
-        listRssLinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectLink = (RssLink) adapterView.getItemAtPosition(i);
-                getLinkListener.getLink(selectLink);
+                return true;
             }
         });
         return v;
     }
 
-    void dbRead() {
-        db = dbHelper.getWritableDatabase();
-        Cursor c = db.query(DB_NAME, null, null, null, null, null, null);
-        rssLinks = new ArrayList<>();
-        if (c.moveToFirst()) {
-            int idColIndex = c.getColumnIndex("id");
-            int titleColIndex = c.getColumnIndex("title");
-            int linkColIndex = c.getColumnIndex("link");
-            do {
-                rssLinks.add(new RssLink(c.getInt(idColIndex), c.getString(linkColIndex), c.getString(titleColIndex)));
-            } while (c.moveToNext());
-            setList();
-        } else
-            c.close();
+    public Cursor getCursor() {
+        cursor = db.query(DB_NAME, null, null, null, null, null, null);
+        return cursor;
     }
 
-    public void setList() {
-        linksAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, rssLinks);
+    public void changeCursor() {
+        linksAdapter.changeCursor(getCursor());
+    }
+
+    public void setList(Cursor cursor) {
+        linksAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_1,
+                cursor, new String[]{"title"}, new int[]{android.R.id.text1}, 0);
         listRssLinks.setAdapter(linksAdapter);
+
+
     }
 
 }

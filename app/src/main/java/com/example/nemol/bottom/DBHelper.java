@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by nemol on 18.11.2017.
  */
 
-class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context) {
         super(context, "myDB", null, 1);
@@ -17,7 +17,7 @@ class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table RSStable ("
-                + "id integer primary key autoincrement,"
+                + "_id integer primary key autoincrement,"
                 + "title text,"
                 + "link text" + ");");
     }

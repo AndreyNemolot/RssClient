@@ -1,4 +1,4 @@
-package com.example.nemol.bottom;
+package com.example.nemol.bottom.Model;
 
 import android.os.AsyncTask;
 
@@ -101,31 +101,29 @@ class GetRssItems extends AsyncTask<String, Void, ArrayList<RssItem>>{
 
                         Element entry = (Element) nodeList.item(i);
 
-                        Element _titleE = (Element) entry.getElementsByTagName(
+                        Element titleE = (Element) entry.getElementsByTagName(
                                 "title").item(0);
-                        Element _descriptionE = (Element) entry
+                        Element descriptionE = (Element) entry
                                 .getElementsByTagName("description").item(0);
-                        Element _pubDateE = (Element) entry
+                        Element pubDateE = (Element) entry
                                 .getElementsByTagName("pubDate").item(0);
-                        Element _linkE = (Element) entry.getElementsByTagName(
+                        Element linkE = (Element) entry.getElementsByTagName(
                                 "link").item(0);
 
-                        String _title = _titleE.getFirstChild().getNodeValue();
-                        String _description = _descriptionE.getFirstChild().getNodeValue();
-                        Date _pubDate = new Date(_pubDateE.getFirstChild().getNodeValue());
-                        String _link = _linkE.getFirstChild().getNodeValue();
-                        RssItem rssItem = new RssItem(_title, _description,
-                                _pubDate, _link);
+                        String title = titleE.getFirstChild().getNodeValue();
+                        String description = descriptionE.getFirstChild().getNodeValue();
+                        Date pubDate = new Date(pubDateE.getFirstChild().getNodeValue());
+                        String link = linkE.getFirstChild().getNodeValue();
+                        RssItem rssItem = new RssItem(title, description,
+                                pubDate, link);
 
                         rssItems.add(rssItem);
                     }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return rssItems;
     }
 }

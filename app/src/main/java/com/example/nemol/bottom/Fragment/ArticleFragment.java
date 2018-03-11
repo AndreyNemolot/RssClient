@@ -1,4 +1,4 @@
-package com.example.nemol.bottom;
+package com.example.nemol.bottom.Fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.nemol.bottom.R;
 
 import org.w3c.dom.Text;
 

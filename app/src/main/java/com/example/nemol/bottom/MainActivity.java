@@ -16,6 +16,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.nemol.bottom.Fragment.ArticleFragment;
+import com.example.nemol.bottom.Fragment.ItemsFragment;
+import com.example.nemol.bottom.Fragment.LinksFragment;
+import com.example.nemol.bottom.Interface.GetArticle;
+import com.example.nemol.bottom.Interface.GetLink;
+import com.example.nemol.bottom.Model.RssItem;
+import com.example.nemol.bottom.Model.RssLink;
+
 public class MainActivity extends AppCompatActivity implements GetLink, GetArticle {
 
     final Context context = this;
@@ -74,12 +82,12 @@ public class MainActivity extends AppCompatActivity implements GetLink, GetArtic
 
     };
 
-    void addFragment(int _view, boolean selectItem){
+    void addFragment(int _view, boolean selectItem) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        switch (_view){
+        switch (_view) {
             case R.id.linksListFrg:
                 fragmentTransaction.replace(R.id.frgmCont, linksFragment);
-                if (selectItem){
+                if (selectItem) {
                     bottomNavigationView.setSelectedItemId(R.id.linksListFrg);
                 }
                 break;
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements GetLink, GetArtic
         fragmentTransaction.commit();
     }
 
-    void addNewLink(){
+    void addNewLink() {
         LayoutInflater li = LayoutInflater.from(context);
         View dialogView = li.inflate(R.layout.add_new_rss_dialog, null);
         AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
@@ -111,13 +119,13 @@ public class MainActivity extends AppCompatActivity implements GetLink, GetArtic
                 .setCancelable(false)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                            public void onClick(DialogInterface dialog, int id) {
                                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                                 ContentValues cv = new ContentValues();
                                 cv.put("title", titleInput.getText().toString());
                                 cv.put("link", linkInput.getText().toString());
                                 db.insert("RSStable", null, cv);
-                                linksFragment.dbRead();
+                                linksFragment.changeCursor();
 
                             }
                         })
@@ -129,27 +137,26 @@ public class MainActivity extends AppCompatActivity implements GetLink, GetArtic
                         });
 
         AlertDialog alertDialog = mDialogBuilder.create();
-
         alertDialog.show();
     }
 
     @Override
-    public void getLink(RssLink _link) {
+    public void getLink(String link) {
         addFragment(R.id.itemsListFrg, true);
         itemsFragment.cleanList();
         Bundle args = new Bundle();
-        args.putString("link", _link.getLink());
+        args.putString("link", link);
         itemsFragment.setArguments(args);
 
     }
 
     @Override
-    public void getArticle(RssItem _item) {
+    public void getArticle(RssItem item) {
         addFragment(R.id.itemArticle, true);
         Bundle args = new Bundle();
-        args.putString("title", _item.getTitle());
-        args.putString("description", _item.getDescription());
-        args.putString("time", _item.getPubDate().toString());
+        args.putString("title", item.getTitle());
+        args.putString("description", item.getDescription());
+        args.putString("time", item.getPubDate().toString());
         articleFragment.setArguments(args);
     }
 }

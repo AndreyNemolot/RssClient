@@ -9,4 +9,5 @@
     <string name="rss_link">Ссылка</string>
     <string name="add_rss_link">Добавить ссылку</string>
     <string name="title">Имя</string>
+    <string name="NotFound">Неудалось получить статьи</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.nemol.bottom;
+package com.example.nemol.bottom.Interface;
 
 /**
  * Created by nemol on 10.09.2017.
@@ -6,6 +6,6 @@ package com.example.nemol.bottom;
 
 public interface GetLink {
 
-    void getLink(RssLink link);
+    void getLink(String link);
 
 }

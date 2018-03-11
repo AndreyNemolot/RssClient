@@ -16,7 +16,7 @@
 
     <EditText
         android:id="@+id/input_title"
-        android:hint="@string/rss_link"
+        android:hint="@string/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <requestFocus />
@@ -24,7 +24,7 @@
 
     <EditText
         android:id="@+id/input_link"
-        android:hint="@string/title"
+        android:hint="@string/rss_link"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <requestFocus />

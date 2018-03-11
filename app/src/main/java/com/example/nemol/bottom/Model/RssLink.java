@@ -1,4 +1,4 @@
-package com.example.nemol.bottom;
+package com.example.nemol.bottom.Model;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -13,7 +13,7 @@ public class RssLink {
     private String link;
     private String title;
 
-    RssLink(int id, String link, String title) {
+    public RssLink(int id, String link, String title) {
         this.id = id;
         this.link = link;
         this.title = title;
@@ -24,7 +24,7 @@ public class RssLink {
         return getTitle();
     }
 
-    String getLink() {
+    public String getLink() {
         return this.link;
     }
 
